@@ -7,11 +7,11 @@ import xmltodict
 
 
 class Item(object):
-	def __init__(self, id, description='', amount=0, quantity=1, weight=None,
+	def __init__(self, id, amount, description='', quantity=1, weight=None,
 				shipping_cost=None):
 		self.id = id
-		self.description = description
 		self.amount = '%0.2f' % (amount,)
+		self.description = description
 		self.quantity = quantity
 		self.weight = weight
 		self.shipping_cost = shipping_cost and ('%0.2f' % (shipping_cost,))
