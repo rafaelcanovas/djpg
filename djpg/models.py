@@ -29,7 +29,7 @@ class Cart(object):
 		self._data['currency'] = currency
 
 		if redirect_url is not None:
-			self._data['redirectUrl'] = redirect_url
+			self._data['redirectURL'] = redirect_url
 		if max_age is not None:
 			self._data['maxAge'] = max_age
 		if max_uses is not None:
