@@ -5,3 +5,4 @@ __contact__ = 'rafaelcanovas@me.com'
 
 from .codes import codes
 from .models import Cart, Item
+from . import signals
