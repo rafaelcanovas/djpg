@@ -29,4 +29,3 @@ pip-log.txt
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
-sftp-config.json
