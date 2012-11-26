@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup(name='djpg',
-      version='0.1.0',
+      version='0.1.1',
       author='Rafael Canovas',
       author_email='rafaelcanovas@me.com',
       url='https://github.com/rafaelcanovas/djpg',
