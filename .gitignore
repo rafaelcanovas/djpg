@@ -50,5 +50,5 @@ nosetests.xml
 local_settings.py
 
 ### SublimeText ###
-# SublimeText project files
+*.sublime-project
 *.sublime-workspace
