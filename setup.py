@@ -16,8 +16,7 @@ setup(name='djpg',
 	package_data={'': ['UNLICENSE']},
 	install_requires=[
 		'requests',
-		'furl==0.3.4',
-		'xmltodict==0.5'
+		'xmltodict==0.5.1'
 	],
 	license=open('UNLICENSE').read(),
 )
