@@ -1,9 +1,18 @@
+import requests
+import xmltodict
+from urlparse import urljoin
+
 from django.conf import settings
 from django.http import HttpResponseRedirect
 
-from furl import furl
-import requests
-import xmltodict
+
+DEFAULT_CHARSET = getattr(settings, 'DEFAULT_CHARSET', 'UTF-8')
+CHECKOUT_URL = getattr(settings, 'PAGSEGURO_CHECKOUT_URL',
+			'https://ws.pagseguro.uol.com.br/v2/checkout/')
+PAYMENT_URL = getattr(settings, 'PAGSEGURO_PAYMENT_URL',
+			'https://pagseguro.uol.com.br/v2/checkout/payment.html')
+NOTIFICATIONS_URL = getattr(settings, 'PAGSEGURO_NOTIFICATIONS_URL',
+			'https://ws.pagseguro.uol.com.br/v2/transactions/notifications')
 
 
 class Item(object):
@@ -25,21 +34,16 @@ class Cart(object):
 
 		self._data['email'] = email or settings.PAGSEGURO_EMAIL
 		self._data['token'] = token or settings.PAGSEGURO_TOKEN
+
 		self._data['reference'] = reference
 		self._data['currency'] = currency
 
-		if redirect_url is not None:
+		if redirect_url:
 			self._data['redirectURL'] = redirect_url
-		if max_age is not None:
+		if max_age:
 			self._data['maxAge'] = max_age
-		if max_uses is not None:
+		if max_uses:
 			self._data['maxUses'] = max_uses
-
-		self.charset = getattr(settings, 'DEFAULT_CHARSET', 'UTF-8')
-		self.checkout_url = getattr(settings, 'PAGSEGURO_CHECKOUT_URL',
-				'https://ws.pagseguro.uol.com.br/v2/checkout/')
-		self.payment_url = getattr(settings, 'PAGSEGURO_PAYMENT_URL',
-				'https://pagseguro.uol.com.br/v2/checkout/payment.html')
 
 	def add_item(self, item):
 		if isinstance(item, Item):
@@ -61,9 +65,9 @@ class Cart(object):
 			ret['itemAmount' + o] = v.amount
 			ret['itemQuantity' + o] = v.quantity
 
-			if v.weight is not None:
+			if v.weight:
 				ret['itemWeight' + o] = v.weight
-			if v.shipping_cost is not None:
+			if v.shipping_cost:
 				ret['itemShippingCost' + o] = v.shipping_cost
 
 		return ret
@@ -75,23 +79,25 @@ class Cart(object):
 
 	def get_http_headers(self):
 		return {'Content-Type':
-				'application/x-www-form-urlencoded; charset=' + self.charset}
+				'application/x-www-form-urlencoded; charset=' + DEFAULT_CHARSET}
 
 	def checkout(self):
 		data = self.get_http_data()
 		headers = self.get_http_headers()
 
-		r = requests.post(self.checkout_url, data=data, headers=headers)
+		r = requests.post(CHECKOUT_URL, data=data, headers=headers)
 
-		if r.status_code == requests.codes.ok:
+		if r.status_code == 200:
 			content = xmltodict.parse(r.content)
 
-			if content['checkout']:
+			try:
 				return content['checkout']['code']
+			except KeyError:
+				pass
 
 	def proceed(self, code):
-		return HttpResponseRedirect(furl(self.payment_url)
-									.add(query_params={'code': code}).url)
+		endpoint = PAYMENT_URL + '?=' + code
+		return HttpResponseRedirect(endpoint)
 
 
 class Notification(object):
@@ -99,18 +105,14 @@ class Notification(object):
 		self.type = type
 		self.code = code
 
-		self.notifications_url = getattr(settings,
-			'PAGSEGURO_NOTIFICATIONS_URL',
-			'https://ws.pagseguro.uol.com.br/v2/transactions/notifications')
-
 	def fetch_content(self):
-		f = furl(self.notifications_url).add(path=self.code)
+		endpoint = urljoin(NOTIFICATIONS_URL, self.code)
 		params = {
-				'email': settings.PAGSEGURO_EMAIL,
-				'token': settings.PAGSEGURO_TOKEN
+			'email': settings.PAGSEGURO_EMAIL,
+			'token': settings.PAGSEGURO_TOKEN
 		}
 
-		r = requests.get(f.url, params=params)
+		r = requests.get(endpoint, params=params)
 
-		if r.status_code == requests.codes.ok:
+		if r.status_code == 200:
 			return xmltodict.parse(r.content)
