@@ -1,12 +1,6 @@
 class CodesDict(object):
-	def __init__(self, codes={}):
-		super(CodesDict, self).__setattr__('_codes', codes)
-
-	def __setattr__(self, name, value):
-		self._codes[name] = value
-
-	def __getattr__(self, name):
-		return self._codes[name]
+	def __init__(self, codes):
+		self.__dict__.update(codes)
 
 _codes = {
 	'waiting': 1,
