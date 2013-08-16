@@ -28,8 +28,8 @@ def dispatch_transaction(sender, **kwargs):
 		codes.canceled: transaction_canceled
 	}
 
-	signals.get(status, transaction_unknown).send(
-		sender=None,
-		transaction=transaction)
+	signals \
+		.get(status, transaction_unknown) \
+		.send(sender=None, transaction=transaction)
 
 transaction_received.connect(dispatch_transaction)
