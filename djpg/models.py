@@ -96,7 +96,7 @@ class Cart(object):
 				pass
 
 	def proceed(self, code):
-		endpoint = PAYMENT_URL + '?=' + code
+		endpoint = PAYMENT_URL + '?code=' + code
 		return HttpResponseRedirect(endpoint)
 
 
