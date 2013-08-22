@@ -9,6 +9,9 @@ from .signals import notification_received, transaction_received
 @require_POST
 @csrf_exempt
 def notifications(request):
+	if request.META['HTTP_HOST'] != 'pagseguro.uol.com.br':
+		return HttpResponseBadRequest()
+
 	try:
 		notification_type = request.POST['notificationType']
 		notification_code = request.POST['notificationCode']
