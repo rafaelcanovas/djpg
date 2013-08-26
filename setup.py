@@ -5,10 +5,17 @@ try:
 except ImportError:
 	from distutils.core import setup
 
+try:
+	import pypandoc
+	long_description = pypandoc.convert('README.md', 'rst')
+except (ImportError, OSError, IOError):
+	long_description = ''
+
+
 setup(name='djpg',
 	version='0.1.1',
 	description='djpg is a Django module that integrates with the online payment service PagSeguro.',
-	long_description=open('README.rst').read(),
+	long_description=long_description,
 	author='Rafael Canovas',
 	author_email='rafaelcanovas@me.com',
 	url='https://github.com/rafaelcanovas/djpg',
