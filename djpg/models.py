@@ -10,9 +10,9 @@ DEFAULT_CHARSET = getattr(settings, 'DEFAULT_CHARSET', 'UTF-8')
 CHECKOUT_URL = getattr(settings, 'PAGSEGURO_CHECKOUT_URL',
 			'https://ws.pagseguro.uol.com.br/v2/checkout/')
 PAYMENT_URL = getattr(settings, 'PAGSEGURO_PAYMENT_URL',
-			'https://pagseguro.uol.com.br/v2/checkout/payment.html')
+			'https://pagseguro.uol.com.br/v2/checkout/payment.html/')
 NOTIFICATIONS_URL = getattr(settings, 'PAGSEGURO_NOTIFICATIONS_URL',
-			'https://ws.pagseguro.uol.com.br/v2/transactions/notifications')
+			'https://ws.pagseguro.uol.com.br/v2/transactions/notifications/')
 
 
 class Item(object):
