@@ -25,5 +25,5 @@ setup(name='djpg',
 		'requests',
 		'xmltodict==0.5.1'
 	],
-	license=open('UNLICENSE').read(),
+	license=open('LICENSE').read(),
 )
