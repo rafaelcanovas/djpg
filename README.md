@@ -1,6 +1,8 @@
 # djpg
 
 `djpg` is a Django module that integrates with the online payment service [PagSeguro](https://pagseguro.uol.com.br/).
+It will not touch your database neither alter your Django installation, `djpg` simply provides the machinery for you to send and receive requests from PagSeguro in a clean and pythonic way.
+Create a cart, add items, send the user to the checkout page, and receive notifications about the user activity.
 
 
 ## Installation
