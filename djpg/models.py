@@ -19,11 +19,11 @@ class Item(object):
 	def __init__(self, id, amount, description='', quantity=1, weight=None,
 				shipping_cost=None):
 		self.id = id
-		self.amount = '%0.2f' % (amount,)
+		self.amount = '%0.2f' % amount
 		self.description = description
 		self.quantity = quantity
 		self.weight = weight
-		self.shipping_cost = shipping_cost and ('%0.2f' % (shipping_cost,))
+		self.shipping_cost = shipping_cost and ('%0.2f' % shipping_cost)
 
 
 class Cart(object):
