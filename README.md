@@ -11,6 +11,13 @@ It will not touch your database neither alter your Django installation, `djpg` s
 $ pip install djpg
 ```
 
+After installing, the only configurations required are `PAGSEGURO_EMAIL` and `PAGSEGURO_TOKEN`. You should add them to your *settings.py* file. The first is your signup email from PagSeguro, the other is the token they'll give you when you have a *seller* account. For example:
+
+```python
+PAGSEGURO_EMAIL = 'john@example.com'
+PAGSEGURO_TOKEN = '78W52AQQ9Q8Q7D45S98AS8715SAQLEB1'
+```
+
 
 ## Examples
 
