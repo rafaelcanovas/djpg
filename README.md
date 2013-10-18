@@ -12,11 +12,6 @@ Simply:
 ```bash
 $ pip install djpg
 ```
-Or:
-
-```bash
-$ pip install -e git+https://github.com/mstrcnvs/djpg.git@master#egg=djpg
-```
 
 
 ## Examples
