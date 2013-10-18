@@ -45,6 +45,9 @@ class Cart(object):
 		if max_uses:
 			self._data['maxUses'] = max_uses
 
+	def get_items(self):
+		return self._items
+
 	def add_item(self, item):
 		if isinstance(item, Item):
 			self._items.append(item)
