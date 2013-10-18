@@ -7,8 +7,6 @@ It will not touch your database neither alter your Django installation, `djpg` s
 
 ## Installation
 
-Simply:
-
 ```bash
 $ pip install djpg
 ```
@@ -19,17 +17,17 @@ $ pip install djpg
 ### Creating a cart and redirecting the user
 
 ```python
-import djpg
+from djpg import Cart, Item
 
-def my_view(request):
-	cart = djpg.Cart(reference='1234', redirect_url='https://mysite.com/')
-	item = djpg.Item(id='1', description='Cool T-shirts!', amount=25.00, quantity=2)
+def my_checkout_view(request):
+	cart = Cart(reference='myref123', redirect_url='https://mysite.com/')
+	item = Item(id=1, amount=19.50, description='Cool T-shirts!', quantity=2)
 	cart.add_item(item)
 
 	code = cart.checkout()
 	if code:
-		# This will redirect the user to PagSeguro's checkout page
-		# so the cart can be paid, or canceled.
+		# This will redirect the user to the checkout page,
+		# where the cart can be paid.
 		return cart.proceed(code)
 ```
 
