@@ -33,9 +33,7 @@ def my_checkout_view(request):
 
 ### Receiving notifications
 
-This snippet will ensure `djpg` receives notifications from PagSeguro and dispatch them to the respective signals.
-
-This endpoint needs to be configured in your PagSeguro account also (e.g.: https://mysite.com/pagseguro/notifications/).
+The following snippet will ensure `djpg` receives notifications from PagSeguro and dispatch them to the respective signals.
 
 ```python
 urlpatterns += patterns('',
@@ -43,6 +41,7 @@ urlpatterns += patterns('',
 )
 ```
 
+Keep in mind that this endpoint needs to be configured in your PagSeguro account also (e.g.: https://mysite.com/pagseguro/notifications/).
 Then you can connect listeners to the signals that are relevant to you.
 
 ```python
