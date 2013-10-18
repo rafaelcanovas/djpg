@@ -4,8 +4,6 @@
 
 It will not touch your database neither alter your Django installation, `djpg` simply provides the machinery for you to send and receive requests from PagSeguro in a clean and pythonic way.
 
-Create a cart, add items, send the user to the checkout page, and receive notifications about the user activity.
-
 
 ## Installation
 
@@ -42,7 +40,9 @@ def my_view(request):
 
 ### Receiving notifications
 
-This snippet will ensure `djpg` receives notifications from PagSeguro and dispatch them to the respective signals. This endpoint needs to be configured in your PagSeguro's account also, under "Notificações de Transações" (e.g.: https://mysite.com/pagseguro/notifications/).
+This snippet will ensure `djpg` receives notifications from PagSeguro and dispatch them to the respective signals.
+
+This endpoint needs to be configured in your PagSeguro account also (e.g.: https://mysite.com/pagseguro/notifications/).
 
 ```python
 urlpatterns += patterns('',
