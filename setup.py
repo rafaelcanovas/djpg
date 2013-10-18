@@ -11,6 +11,11 @@ try:
 except (ImportError, OSError, IOError):
 	long_description = ''
 
+try:
+	license = open('LICENSE').read()
+except IOError:
+	license = ''
+
 
 setup(
 	name='djpg',
@@ -20,11 +25,12 @@ setup(
 	author='Rafael Canovas',
 	author_email='rafaelcanovas@me.com',
 	url='https://github.com/mstrcnvs/djpg',
+	license=license,
 	packages=['djpg'],
 	package_data={'': ['LICENSE']},
+	include_package_data=True,
 	install_requires=[
 		'requests',
 		'xmltodict==0.5.1'
 	],
-	license=open('LICENSE').read(),
 )
