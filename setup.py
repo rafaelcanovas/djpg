@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 try:
 	from setuptools import setup
@@ -15,7 +16,6 @@ try:
 	license = open('LICENSE').read()
 except IOError:
 	license = ''
-
 
 setup(
 	name='djpg',
