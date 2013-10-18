@@ -16,7 +16,7 @@ NOTIFICATIONS_URL = getattr(settings, 'PAGSEGURO_NOTIFICATIONS_URL',
 
 
 class Item(object):
-	def __init__(self, id, amount, description='', quantity=1, weight=None,
+	def __init__(self, id, amount, description='...', quantity=1, weight=None,
 				shipping_cost=None):
 		self.id = id
 		self.amount = '%0.2f' % amount
