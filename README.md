@@ -19,7 +19,7 @@ PAGSEGURO_TOKEN = '78W52AQQ9Q8Q7D45S98AS8715SAQLEB1'
 ```
 
 
-## Examples
+## Usage
 
 ### Creating a cart and redirecting the user
 
