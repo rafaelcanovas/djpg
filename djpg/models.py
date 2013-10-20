@@ -1,10 +1,17 @@
+from urlparse import urljoin
+
 import requests
 import xmltodict
-from urlparse import urljoin
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
+from django.core.exceptions import ImproperlyConfigured
 
+try:
+	PAGSEGURO_EMAIL = settings.PAGSEGURO_EMAIL
+	PAGSEGURO_TOKEN = settings.PAGSEGURO_TOKEN
+except AttributeError:
+	raise ImproperlyConfigured('PagSeguro email or token missing')
 
 DEFAULT_CHARSET = getattr(settings, 'DEFAULT_CHARSET', 'UTF-8')
 CHECKOUT_URL = getattr(settings, 'PAGSEGURO_CHECKOUT_URL',
@@ -28,22 +35,24 @@ class Item(object):
 
 class Cart(object):
 	def __init__(self, reference, currency='BRL', redirect_url=None,
-				max_age=None, max_uses=None, email=None, token=None):
-		self._data = {}
-		self._items = []
-
-		self._data['email'] = email or settings.PAGSEGURO_EMAIL
-		self._data['token'] = token or settings.PAGSEGURO_TOKEN
-
-		self._data['reference'] = reference
-		self._data['currency'] = currency
+				max_age=None, max_uses=None):
+		session = requests.Session()
+		session.headers['content-type'] = \
+			'application/x-www-form-urlencoded; charset=' + DEFAULT_CHARSET
+		session.params['email'] = PAGSEGURO_EMAIL
+		session.params['token'] = PAGSEGURO_TOKEN
+		session.params['reference'] = reference
+		session.params['currency'] = currency
 
 		if redirect_url:
-			self._data['redirectURL'] = redirect_url
+			session.params['redirectURL'] = redirect_url
 		if max_age:
-			self._data['maxAge'] = max_age
+			session.params['maxAge'] = max_age
 		if max_uses:
-			self._data['maxUses'] = max_uses
+			session.params['maxUses'] = max_uses
+
+		self._items = []
+		self._session = session
 
 	def get_items(self):
 		return self._items
@@ -75,23 +84,12 @@ class Cart(object):
 
 		return ret
 
-	def get_http_data(self):
-		d = self._data.copy()
-		d.update(self.get_items_data())
-		return d
-
-	def get_http_headers(self):
-		return {'Content-Type':
-				'application/x-www-form-urlencoded; charset=' + DEFAULT_CHARSET}
-
 	def checkout(self):
-		data = self.get_http_data()
-		headers = self.get_http_headers()
+		params = self.get_items_data()
+		response = self._session.post(CHECKOUT_URL, params=params)
 
-		r = requests.post(CHECKOUT_URL, data=data, headers=headers)
-
-		if r.status_code == 200:
-			content = xmltodict.parse(r.content)
+		if response.status_code == 200:
+			content = xmltodict.parse(response.content)
 
 			try:
 				return content['checkout']['code']
