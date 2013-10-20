@@ -62,6 +62,16 @@ class DjpgTestCase(unittest.TestCase):
 
 		self.assertIsNotNone(code)
 
+	def test_cart_proceed(self):
+		cart = djpg.Cart(reference='...')
+		item = djpg.Item(id=1, amount=19.50)
+		cart.add_item(item)
+		code = cart.checkout()
+		proceed = cart.proceed(code)
+
+		self.assertIn('pagseguro', proceed.get('Location'))
+		self.assertIn(code, proceed.get('Location'))
+
 
 if __name__ == '__main__':
 	unittest.main()
