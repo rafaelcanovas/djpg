@@ -109,8 +109,8 @@ class Notification(object):
 	def fetch_content(self):
 		endpoint = urljoin(NOTIFICATIONS_URL, self.code)
 		params = {
-			'email': settings.PAGSEGURO_EMAIL,
-			'token': settings.PAGSEGURO_TOKEN
+			'email': PAGSEGURO_EMAIL,
+			'token': PAGSEGURO_TOKEN
 		}
 
 		r = requests.get(endpoint, params=params)
