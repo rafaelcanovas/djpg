@@ -7,6 +7,8 @@ It will not touch your database neither alter your Django installation, `djpg` s
 
 ## Installation
 
+Simply run:
+
 ```bash
 $ pip install djpg
 ```
