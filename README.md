@@ -59,8 +59,8 @@ from djpg.signals import transaction_paid
 def on_paid(sender, **kwargs):
 	transaction = kwargs.pop('transaction')
 	ref = transaction['reference']
-	info = transaction['anotherinfo']
-	do_something()
+	status = transaction['status']
+	# ...
 
 transaction_paid.connect(on_paid)
 ```
