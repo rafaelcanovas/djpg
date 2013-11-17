@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger('djpg')
+
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -14,6 +17,9 @@ def notifications(request):
 		notification_code = request.POST['notificationCode']
 	except KeyError:
 		return HttpResponseBadRequest()
+
+	logger.info('Notification with type "%s" and code "%s" received'
+				% (notification_type, notification_code))
 
 	notification = Notification(type=notification_type, code=notification_code)
 	notification_received.send(sender=None, notification=notification)

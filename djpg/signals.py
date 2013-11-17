@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger('djpg')
+
 from django.dispatch import Signal
 from .codes import codes
 
@@ -31,5 +34,7 @@ def dispatch_transaction(sender, **kwargs):
 	signals \
 		.get(status, transaction_unknown) \
 		.send(sender=None, transaction=transaction)
+
+	logger.info('Transaction with status "%s" dispatched' % (status,))
 
 transaction_received.connect(dispatch_transaction)
