@@ -116,4 +116,4 @@ class Notification(object):
 		r = requests.get(endpoint, params=params)
 
 		if r.status_code == 200:
-			return xmltodict.parse(r.content)
+			return xmltodict.parse(r.content, encoding='ISO-8859-1')
