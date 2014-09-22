@@ -65,7 +65,7 @@ def on_paid(sender, **kwargs):
 transaction_paid.connect(on_paid)
 ```
 
-The available signals are:
+The following signals are available:
 - notification_received
 - transaction_received
 - transaction_waiting
