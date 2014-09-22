@@ -1,4 +1,7 @@
-from urlparse import urljoin
+try:
+	from urlparse import urljoin  # Python 2
+except ImportError:
+	from urllib.parse import urljoin  # Python 3
 
 import requests
 import xmltodict
@@ -34,8 +37,7 @@ class Item(object):
 
 
 class Cart(object):
-	def __init__(self, reference, currency='BRL', redirect_url=None,
-				max_age=None, max_uses=None):
+	def __init__(self, reference, currency='BRL', **kwargs):
 		session = requests.Session()
 		session.headers['content-type'] = \
 			'application/x-www-form-urlencoded; charset=' + DEFAULT_CHARSET
@@ -44,12 +46,35 @@ class Cart(object):
 		session.params['reference'] = reference
 		session.params['currency'] = currency
 
-		if redirect_url:
-			session.params['redirectURL'] = redirect_url
-		if max_age:
-			session.params['maxAge'] = max_age
-		if max_uses:
-			session.params['maxUses'] = max_uses
+		optional_params = {
+			'redirectURL': 'redirect_url',
+			'notificationURL': 'notification_url',
+			'maxAge': 'max_age',
+			'maxUses': 'max_uses',
+			'senderName': 'sender_name',
+			'senderEmail': 'sender_email',
+			'senderPhone': 'sender_phone',
+			'senderAreaCode': 'sender_area_code',
+			'senderCPF': 'sender_cpf',
+			'senderBornDate': 'sender_born_date',
+			'shippingType': 'shipping_type',
+			'shippingCost': 'shipping_cost',
+			'shippingAddressCountry': 'shipping_address_country',
+			'shippingAddressState': 'shipping_address_state',
+			'shippingAddressCity': 'shipping_address_city',
+			'shippingAddressPostalCode': 'shipping_address_postal_code',
+			'shippingAddressDistrict': 'shipping_address_district',
+			'shippingAddressStreet': 'shipping_address_street',
+			'shippingAddressNumber': 'shipping_address_number',
+			'shippingAddressComplement': 'shipping_address_complement',
+			'extraAmount': 'extra_amount',
+		}
+
+		for k, v in optional_params.items():
+			try:
+				session.params[k] = kwargs[v]
+			except KeyError:
+				pass
 
 		self._items = []
 		self._session = session
