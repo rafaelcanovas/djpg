@@ -12,25 +12,25 @@ from .signals import notification_received, transaction_received
 @require_POST
 @csrf_exempt
 def notifications(request):
-	try:
-		notification_type = request.POST['notificationType']
-		notification_code = request.POST['notificationCode']
-	except KeyError:
-		return HttpResponseBadRequest()
+    try:
+        notification_type = request.POST['notificationType']
+        notification_code = request.POST['notificationCode']
+    except KeyError:
+        return HttpResponseBadRequest()
 
-	logger.info('Notification with type "%s" and code "%s" received'
-				% (notification_type, notification_code))
+    logger.info('Notification with type "%s" and code "%s" received'
+                % (notification_type, notification_code))
 
-	notification = Notification(type=notification_type, code=notification_code)
-	notification_received.send(sender=None, notification=notification)
+    notification = Notification(type=notification_type, code=notification_code)
+    notification_received.send(sender=None, notification=notification)
 
-	content = notification.fetch_content()
-	if content:
-		if notification.type == 'transaction':
-			try:
-				transaction = content['transaction']
-				transaction_received.send(sender=None, transaction=transaction)
-			except KeyError:
-				pass
+    content = notification.fetch_content()
+    if content:
+        if notification.type == 'transaction':
+            try:
+                transaction = content['transaction']
+                transaction_received.send(sender=None, transaction=transaction)
+            except KeyError:
+                pass
 
-	return HttpResponse()
+    return HttpResponse()

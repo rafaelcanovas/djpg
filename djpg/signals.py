@@ -18,23 +18,23 @@ transaction_unknown = Signal()
 
 
 def dispatch_transaction(sender, **kwargs):
-	transaction = kwargs.pop('transaction')
-	status = int(transaction['status'])
+    transaction = kwargs.pop('transaction')
+    status = int(transaction['status'])
 
-	signals = {
-		codes.waiting: transaction_waiting,
-		codes.analysis: transaction_analysis,
-		codes.paid: transaction_paid,
-		codes.available: transaction_available,
-		codes.dispute: transaction_dispute,
-		codes.returned: transaction_returned,
-		codes.canceled: transaction_canceled
-	}
+    signals = {
+        codes.waiting: transaction_waiting,
+        codes.analysis: transaction_analysis,
+        codes.paid: transaction_paid,
+        codes.available: transaction_available,
+        codes.dispute: transaction_dispute,
+        codes.returned: transaction_returned,
+        codes.canceled: transaction_canceled
+    }
 
-	signals \
-		.get(status, transaction_unknown) \
-		.send(sender=None, transaction=transaction)
+    signals \
+        .get(status, transaction_unknown) \
+        .send(sender=None, transaction=transaction)
 
-	logger.info('Transaction with status "%s" dispatched' % (status,))
+    logger.info('Transaction with status "%s" dispatched' % (status,))
 
 transaction_received.connect(dispatch_transaction)
