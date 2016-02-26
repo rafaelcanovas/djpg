@@ -67,7 +67,7 @@ class DjpgTestCase(unittest.TestCase):
         item = djpg.Item(id=1, amount=19.50)
         cart.add_item(item)
 
-        self.assertNotRaises(
+        self.assertRaises(
             djpg.exceptions.PagSeguroInvalidRequestException,
             cart.checkout)
 
