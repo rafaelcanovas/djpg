@@ -10,7 +10,8 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.core.exceptions import ImproperlyConfigured
 
-from djpg.exceptions import PagseguroInvalidRequestException
+from djpg.exceptions import PagSeguroUnauthorizedException, \
+    PagSeguroInvalidRequestException
 
 try:
     PAGSEGURO_EMAIL = settings.PAGSEGURO_EMAIL
@@ -125,12 +126,16 @@ class Cart(object):
     def checkout(self):
         params = self.get_items_data()
         response = self._session.post(CHECKOUT_URL, params=params)
+
+        if response.status_code == 401:
+            raise PagSeguroUnauthorizedException()
+
         content = xmltodict.parse(response.content)
 
         if response.status_code == 200:
             return content['checkout']['code']
         elif response.status_code == 400:
-            raise PagseguroInvalidRequestException(
+            raise PagSeguroInvalidRequestException(
                 code=content['errors']['error']['code'],
                 msg=content['errors']['error']['message']
             )

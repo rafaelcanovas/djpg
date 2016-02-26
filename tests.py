@@ -62,6 +62,15 @@ class DjpgTestCase(unittest.TestCase):
 
         self.assertIsNotNone(code)
 
+    def test_cart_checkout_invalid_data(self):
+        cart = djpg.Cart(reference='...', sender_phone='abcd')
+        item = djpg.Item(id=1, amount=19.50)
+        cart.add_item(item)
+
+        self.assertNotRaises(
+            djpg.exceptions.PagSeguroInvalidRequestException,
+            cart.checkout)
+
     def test_cart_proceed(self):
         cart = djpg.Cart(reference='...')
         item = djpg.Item(id=1, amount=19.50)
