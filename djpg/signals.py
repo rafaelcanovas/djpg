@@ -19,7 +19,7 @@ transaction_unknown = Signal()
 
 def dispatch_transaction(sender, **kwargs):
     transaction = kwargs.pop('transaction')
-    code = int(transaction['code'])
+    code = transaction['code']
     status = int(transaction['status'])
 
     signals = {
