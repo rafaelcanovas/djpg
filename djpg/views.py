@@ -14,8 +14,14 @@ from .signals import notification_received, transaction_received
 def notifications(request):
     try:
         notification_type = request.POST['notificationType']
+    except KeyError:
+        logger.info('Notification received without "notificationType"')
+        return HttpResponseBadRequest()
+
+    try:
         notification_code = request.POST['notificationCode']
     except KeyError:
+        logger.info('Notification received without "notificationCode"')
         return HttpResponseBadRequest()
 
     logger.info('Notification with type "%s" and code "%s" received'

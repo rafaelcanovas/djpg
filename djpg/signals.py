@@ -19,6 +19,7 @@ transaction_unknown = Signal()
 
 def dispatch_transaction(sender, **kwargs):
     transaction = kwargs.pop('transaction')
+    code = int(transaction['code'])
     status = int(transaction['status'])
 
     signals = {
@@ -35,6 +36,7 @@ def dispatch_transaction(sender, **kwargs):
         .get(status, transaction_unknown) \
         .send(sender=None, transaction=transaction)
 
-    logger.info('Transaction with status "%s" dispatched' % (status,))
+    logger.info('Transaction with status "%s" and code "%s" dispatched'
+                % (status, code))
 
 transaction_received.connect(dispatch_transaction)

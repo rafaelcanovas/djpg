@@ -32,6 +32,11 @@ PAYMENT_URL = (
     if PAGSEGURO_SANDBOX else
     'https://pagseguro.uol.com.br/v2/checkout/payment.html'
 )
+TRANSACTIONS_URL = (
+    'https://ws.sandbox.pagseguro.uol.com.br/v2/transactions/'
+    if PAGSEGURO_SANDBOX else
+    'https://ws.pagseguro.uol.com.br/v2/transactions/'
+)
 NOTIFICATIONS_URL = (
     'https://ws.sandbox.pagseguro.uol.com.br/v2/transactions/notifications/'
     if PAGSEGURO_SANDBOX else
@@ -143,6 +148,23 @@ class Cart(object):
     def proceed(self, code):
         endpoint = PAYMENT_URL + '?code=' + code
         return HttpResponseRedirect(endpoint)
+
+
+class Transaction(object):
+    def __init__(self, code):
+        self.code = code
+
+    def fetch_content(self):
+        endpoint = urljoin(TRANSACTIONS_URL, self.code)
+        params = {
+            'email': PAGSEGURO_EMAIL,
+            'token': PAGSEGURO_TOKEN
+        }
+
+        r = requests.get(endpoint, params=params)
+
+        if r.status_code == 200:
+            return xmltodict.parse(r.content, encoding='ISO-8859-1')
 
 
 class Notification(object):
