@@ -19,7 +19,7 @@ except IOError:
 
 setup(
     name='djpg',
-    version='0.1.5',
+    version='0.2.0',
     description='djpg is a Django module that integrates with the online payment service PagSeguro.',
     long_description=long_description,
     author='Rafael Canovas',
@@ -30,7 +30,7 @@ setup(
     package_data={'': ['LICENSE']},
     include_package_data=True,
     install_requires=[
-        'requests==2.0.0',
-        'xmltodict==0.8.1'
+        'requests==2.18.4',
+        'xmltodict==0.11.0'
     ],
 )

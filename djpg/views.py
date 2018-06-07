@@ -21,14 +21,15 @@ def notifications(request):
     logger.info('Notification with type "%s" and code "%s" received'
                 % (notification_type, notification_code))
 
-    notification = Notification(type=notification_type, code=notification_code)
+    notification = Notification(notification_code, type=notification_type)
     notification_received.send(sender=None, notification=notification)
 
-    content = notification.fetch_content()
-    if content:
+    data = notification.get_data()
+
+    if data:
         if notification.type == 'transaction':
             try:
-                transaction = content['transaction']
+                transaction = data['transaction']
                 transaction_received.send(sender=None, transaction=transaction)
             except KeyError:
                 pass
