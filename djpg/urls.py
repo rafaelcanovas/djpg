@@ -1,5 +1,6 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+from .views import notifications
 
-urlpatterns = patterns('djpg.views',
-    url(r'notifications/$', 'notifications', name='pagseguro_notifications'),
-)
+urlpatterns = [
+    url(r'notifications/$', notifications, name='pagseguro_notifications'),
+]
