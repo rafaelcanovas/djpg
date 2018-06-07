@@ -30,7 +30,7 @@ setup(
     package_data={'': ['LICENSE']},
     include_package_data=True,
     install_requires=[
-        'requests==2.0.0',
-        'xmltodict==0.8.1'
+        'requests==2.18.4',
+        'xmltodict==0.11.0'
     ],
 )

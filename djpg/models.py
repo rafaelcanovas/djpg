@@ -53,8 +53,7 @@ class Item(object):
 class Cart(object):
     def __init__(self, reference, currency='BRL', **kwargs):
         session = requests.Session()
-        session.headers['content-type'] = \
-            'application/x-www-form-urlencoded; charset=' + DEFAULT_CHARSET
+        session.headers['content-type'] = 'application/x-www-form-urlencoded; charset=' + DEFAULT_CHARSET
         session.params['email'] = PAGSEGURO_EMAIL
         session.params['token'] = PAGSEGURO_TOKEN
         session.params['reference'] = reference
@@ -109,21 +108,21 @@ class Cart(object):
 
     def get_items_data(self):
         ret = {}
-        for i, v in enumerate(self._items):
-            o = str(i + 1)
-            ret['itemId' + o] = v.id
-            ret['itemDescription' + o] = v.description
-            ret['itemAmount' + o] = v.amount
-            ret['itemQuantity' + o] = v.quantity
 
-            if v.weight:
-                ret['itemWeight' + o] = v.weight
-            if v.shipping_cost:
-                ret['itemShippingCost' + o] = v.shipping_cost
+        for i, item in enumerate(self._items, start=1):
+            ret['itemId%s' % i] = item.id
+            ret['itemDescription%s' % i] = item.description
+            ret['itemAmount%s' % i] = item.amount
+            ret['itemQuantity%s' % i] = item.quantity
+
+            if item.weight:
+                ret['itemWeight%s' % i] = item.weight
+            if item.shipping_cost:
+                ret['itemShippingCost%s' % i] = item.shipping_cost
 
         return ret
 
-    def checkout(self):
+    def get_checkout_code(self):
         params = self.get_items_data()
         response = self._session.post(CHECKOUT_URL, params=params)
 
@@ -140,24 +139,30 @@ class Cart(object):
                 msg=content['errors']['error']['message']
             )
 
-    def proceed(self, code):
-        endpoint = PAYMENT_URL + '?code=' + code
-        return HttpResponseRedirect(endpoint)
+    def get_checkout_url(self, code):
+        return '%s?code=%s' % (PAYMENT_URL, code)
 
 
 class Notification(object):
-    def __init__(self, type, code):
-        self.type = type
+    def __init__(self, code, type=''):
         self.code = code
+        self.type = type
 
-    def fetch_content(self):
+    def __str__(self):
+        return '%s (%s)' % (self.code, self.type)
+
+    def get_data(self):
         endpoint = urljoin(NOTIFICATIONS_URL, self.code)
-        params = {
+        response = requests.get(endpoint, params={
             'email': PAGSEGURO_EMAIL,
             'token': PAGSEGURO_TOKEN
-        }
+        })
+        data = xmltodict.parse(response.content)
 
-        r = requests.get(endpoint, params=params)
-
-        if r.status_code == 200:
-            return xmltodict.parse(r.content, encoding='ISO-8859-1')
+        if response.status_code == 200:
+            return data
+        elif response.status_code == 400:
+            raise PagSeguroInvalidRequestException(
+                code=data['errors']['error']['code'],
+                msg=data['errors']['error']['message']
+            )
