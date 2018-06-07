@@ -3,6 +3,6 @@ __version__ = '0.1.5'
 __author__ = 'Rafael Canovas'
 __license__ = 'MIT'
 
-from .models import Cart, Item, Notification
+from .models import Cart, Item, Transaction, Notification
 from .codes import codes
 from . import signals

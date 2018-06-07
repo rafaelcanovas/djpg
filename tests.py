@@ -20,6 +20,7 @@ class DjpgTestCase(unittest.TestCase):
     def test_entry_points(self):
         djpg.Item
         djpg.Cart
+        djpg.Transaction
         djpg.Notification
         djpg.codes
         djpg.signals
@@ -94,15 +95,29 @@ class DjpgTestCase(unittest.TestCase):
         djpg.Notification('123456')
         djpg.Notification('123456', type='transaction')
         djpg.Notification(code='123456')
-        notification = djpg.Notification(code='123456', type='transaction')
+        n = djpg.Notification(code='123456', type='transaction')
 
-        self.assertIsNotNone(str(notification))
+        self.assertIsNotNone(str(n))
 
     def test_invalid_notification(self):
-        notification = djpg.Notification('123456')
+        n = djpg.Notification('123456')
 
         with self.assertRaises(djpg.exceptions.PagSeguroInvalidRequestException):
-            notification.get_data()
+            n.get_data()
+
+    def test_transaction(self):
+        djpg.Transaction('123456')
+        djpg.Transaction(code='123456')
+
+        t = djpg.Transaction('123456')
+
+        self.assertIsNotNone(str(t))
+
+    def test_invalid_transaction(self):
+        t = djpg.Transaction('123456')
+
+        with self.assertRaises(djpg.exceptions.PagSeguroInvalidRequestException):
+            t.get_data()
 
 
 if __name__ == '__main__':

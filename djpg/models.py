@@ -7,7 +7,6 @@ import requests
 import xmltodict
 
 from django.conf import settings
-from django.http import HttpResponseRedirect
 from django.core.exceptions import ImproperlyConfigured
 
 from djpg.exceptions import PagSeguroUnauthorizedException, \
@@ -31,6 +30,11 @@ PAYMENT_URL = (
     'https://sandbox.pagseguro.uol.com.br/v2/checkout/payment.html'
     if PAGSEGURO_SANDBOX else
     'https://pagseguro.uol.com.br/v2/checkout/payment.html'
+)
+TRANSACTIONS_URL = (
+    'https://ws.sandbox.pagseguro.uol.com.br/v2/transactions/'
+    if PAGSEGURO_SANDBOX else
+    'https://ws.pagseguro.uol.com.br/v2/transactions/'
 )
 NOTIFICATIONS_URL = (
     'https://ws.sandbox.pagseguro.uol.com.br/v2/transactions/notifications/'
@@ -143,13 +147,37 @@ class Cart(object):
         return '%s?code=%s' % (PAYMENT_URL, code)
 
 
+class Transaction(object):
+    def __init__(self, code):
+        self.code = code
+
+    def __str__(self):
+        return '<Transaction code=%s>' % self.code
+
+    def get_data(self):
+        endpoint = urljoin(TRANSACTIONS_URL, self.code)
+        response = requests.get(endpoint, params={
+            'email': PAGSEGURO_EMAIL,
+            'token': PAGSEGURO_TOKEN
+        })
+        data = xmltodict.parse(response.content)
+
+        if response.status_code == 200:
+            return data
+        elif response.status_code == 400:
+            raise PagSeguroInvalidRequestException(
+                code=data['errors']['error']['code'],
+                msg=data['errors']['error']['message']
+            )
+
+
 class Notification(object):
-    def __init__(self, code, type=''):
+    def __init__(self, code, type='transaction'):
         self.code = code
         self.type = type
 
     def __str__(self):
-        return '%s (%s)' % (self.code, self.type)
+        return '<Notification code=%s type=%s>' % (self.code, self.type)
 
     def get_data(self):
         endpoint = urljoin(NOTIFICATIONS_URL, self.code)
